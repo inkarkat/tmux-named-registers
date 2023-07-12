@@ -18,7 +18,8 @@ set_bindings() {
     # doesn't work and results in copycat mode never being exited, so n/N after
     # any copycat search will continue to jump to matches instead of being
     # inserted literally.
-    local copycatScriptFilespec=~/.tmux/plugins/tmux-copycat/scripts/copycat_mode_quit.sh
+    local pluginPath="$(tmux show-env -g TMUX_PLUGIN_MANAGER_PATH 2>/dev/null | cut -f2 -d=)"
+    local copycatScriptFilespec="${pluginPath:-${HOME}/.tmux/plugins/tmux-copycat/scripts/copycat_mode_quit.sh}"
     [ -x "$copycatScriptFilespec" ] || copycatScriptFilespec=''
     tmux bind-key -T copy-mode-vi '"' \
 	send-keys -X copy-pipe "cat > ${quotedRegistersDirspec}/in; ${copycatScriptFilespec}${copycatScriptFilespec:+; }tmux switch-client -T yank-register-query"
