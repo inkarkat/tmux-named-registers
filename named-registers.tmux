@@ -1,15 +1,20 @@
 #!/bin/bash
 
+fail() {
+    tmux display-message "ERROR: tmux-named-registers ${1:-encountered an unspecified problem.}"
+    exit 3
+}
+
 readonly scriptDir="$([ "${BASH_SOURCE[0]}" ] && dirname -- "${BASH_SOURCE[0]}" || exit 3)"
-[ -d "$scriptDir" ] || { echo >&2 'ERROR: Cannot determine script directory!'; exit 3; }
-absoluteScriptDir="$(cd "$scriptDir" && printf %s "$PWD" || exit 3)" || exit 3
+[ -d "$scriptDir" ] || fail 'cannot determine script directory!'
+absoluteScriptDir="$(cd "$scriptDir" && printf %s "$PWD" || exit 3)" || fail
 printf -v quotedScriptDir '%q' "$absoluteScriptDir"
 
 # shellcheck source=./scripts/helpers.sh
 source "${absoluteScriptDir}/scripts/helpers.sh"
 
 readonly registersDirspec="${XDG_DATA_HOME:-${HOME}/.local/share}/tmux/named-registers"
-[ -d "$registersDirspec" ] || mkdir --parents -- "$registersDirspec" || { tmux display-message "ERROR: tmux-named-registers cannot initialize data store at $registersDirspec"; }
+[ -d "$registersDirspec" ] || mkdir --parents -- "$registersDirspec" || fail "cannot initialize data store at $registersDirspec"
 printf -v quotedRegistersDirspec '%q' "$registersDirspec"
 
 set_bindings() {
