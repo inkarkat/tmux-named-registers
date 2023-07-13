@@ -41,6 +41,7 @@ set_bindings() {
 }
 
 main() {
+    tmux-is-at-least 2.1 || return 0
     set_bindings
 }
 
