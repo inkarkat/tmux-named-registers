@@ -5,13 +5,12 @@ fail() {
     exit 3
 }
 
-readonly scriptDir="$([ "${BASH_SOURCE[0]}" ] && dirname -- "${BASH_SOURCE[0]}" || exit 3)"
+readonly scriptDir="$([ "${BASH_SOURCE[0]}" ] && cd "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 [ -d "$scriptDir" ] || fail 'cannot determine script directory!'
-absoluteScriptDir="$(cd "$scriptDir" && printf %s "$PWD" || exit 3)" || fail
-printf -v quotedScriptDir '%q' "$absoluteScriptDir"
+printf -v quotedScriptDir '%q' "$scriptDir"
 
 # shellcheck source=./scripts/helpers.sh
-source "${absoluteScriptDir}/scripts/helpers.sh"
+source "${scriptDir}/scripts/helpers.sh"
 
 readonly registersDirspec="${XDG_DATA_HOME:-${HOME}/.local/share}/tmux/named-registers"
 [ -d "$registersDirspec" ] || mkdir --parents -- "$registersDirspec" || fail "cannot initialize data store at $registersDirspec"
@@ -26,8 +25,7 @@ set_bindings() {
     local pluginPath="$(tmux show-env -g TMUX_PLUGIN_MANAGER_PATH 2>/dev/null | cut -f2 -d=)"
     local copycatScriptFilespec="${pluginPath:-${HOME}/.tmux/plugins/tmux-copycat/scripts/copycat_mode_quit.sh}"
     [ -x "$copycatScriptFilespec" ] || copycatScriptFilespec=''
-    tmux bind-key -T copy-mode-vi '"' \
-	send-keys -X copy-pipe "cat > ${quotedRegistersDirspec}/in; ${copycatScriptFilespec}${copycatScriptFilespec:+; }tmux switch-client -T yank-register-query"
+    bind_key_copy_mode '"' copy-pipe "cat > ${quotedRegistersDirspec}/in; ${copycatScriptFilespec}${copycatScriptFilespec:+; }tmux switch-client -T yank-register-query"
 
     tmux bind-key '"' switch-client -T paste-register-query
 
@@ -43,6 +41,7 @@ set_bindings() {
 }
 
 main() {
+    tmux-is-at-least 2.1 || return 0
     set_bindings
 }
 
