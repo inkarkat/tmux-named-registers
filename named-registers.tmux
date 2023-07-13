@@ -5,13 +5,12 @@ fail() {
     exit 3
 }
 
-readonly scriptDir="$([ "${BASH_SOURCE[0]}" ] && dirname -- "${BASH_SOURCE[0]}" || exit 3)"
+readonly scriptDir="$([ "${BASH_SOURCE[0]}" ] && cd "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 [ -d "$scriptDir" ] || fail 'cannot determine script directory!'
-absoluteScriptDir="$(cd "$scriptDir" && printf %s "$PWD" || exit 3)" || fail
-printf -v quotedScriptDir '%q' "$absoluteScriptDir"
+printf -v quotedScriptDir '%q' "$scriptDir"
 
 # shellcheck source=./scripts/helpers.sh
-source "${absoluteScriptDir}/scripts/helpers.sh"
+source "${scriptDir}/scripts/helpers.sh"
 
 readonly registersDirspec="${XDG_DATA_HOME:-${HOME}/.local/share}/tmux/named-registers"
 [ -d "$registersDirspec" ] || mkdir --parents -- "$registersDirspec" || fail "cannot initialize data store at $registersDirspec"
