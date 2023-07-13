@@ -26,8 +26,7 @@ set_bindings() {
     local pluginPath="$(tmux show-env -g TMUX_PLUGIN_MANAGER_PATH 2>/dev/null | cut -f2 -d=)"
     local copycatScriptFilespec="${pluginPath:-${HOME}/.tmux/plugins/tmux-copycat/scripts/copycat_mode_quit.sh}"
     [ -x "$copycatScriptFilespec" ] || copycatScriptFilespec=''
-    tmux bind-key -T copy-mode-vi '"' \
-	send-keys -X copy-pipe "cat > ${quotedRegistersDirspec}/in; ${copycatScriptFilespec}${copycatScriptFilespec:+; }tmux switch-client -T yank-register-query"
+    bind_key_copy_mode '"' copy-pipe "cat > ${quotedRegistersDirspec}/in; ${copycatScriptFilespec}${copycatScriptFilespec:+; }tmux switch-client -T yank-register-query"
 
     tmux bind-key '"' switch-client -T paste-register-query
 

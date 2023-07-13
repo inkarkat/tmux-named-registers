@@ -27,3 +27,9 @@ tmux-is-at-least() {
 	done
 	return 0
 }
+
+bind_key_copy_mode() {
+    	local key="${1:?}"; shift
+    	tmux bind-key -T copy-mode-vi "$key" send-keys -X "$@"
+}
+
