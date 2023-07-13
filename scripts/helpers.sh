@@ -28,8 +28,18 @@ tmux-is-at-least() {
 	return 0
 }
 
-bind_key_copy_mode() {
-    	local key="${1:?}"; shift
-    	tmux bind-key -T copy-mode-vi "$key" send-keys -X "$@"
-}
-
+if tmux-is-at-least 2.4; then
+	bind_key_copy_mode() {
+		local key="${1:?}"; shift
+		tmux bind-key -T copy-mode-vi "$key" send-keys -X "$@"
+		tmux bind-key -T copy-mode    "$key" send-keys -X "$@"
+	}
+else
+	bind_key_copy_mode() {
+		local key="${1:?}"; shift
+		local tmux_command="${1:?}"; shift
+		tmux_command="${tmux_command%-and-cancel}"
+		tmux bind-key -t vi-copy    "$key" "$tmux_command" "$@"
+		tmux bind-key -t emacs-copy "$key" "$tmux_command" "$@"
+	}
+fi
