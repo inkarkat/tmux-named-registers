@@ -14,6 +14,9 @@ Register contents are persisted (also across restarts) in `~/.local/share/tmux/n
   Append the current selection to the existing contents in the named register a ... z.
 - <kbd>prefix</kbd> <kbd>"</kbd> <kbd>a</kbd> ... <kbd>z</kbd> <br>
   Paste the contents of the named register a ... z into the current pane.
+  The next built-in paste (prefix + ]) will repeat the paste of that register.
+- <kbd>prefix</kbd> <kbd>"</kbd> <kbd>"</kbd>
+  Paste the last copied (non-register) buffer (also on subsequent built-in pastes).
 
 ### Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
 

@@ -38,6 +38,8 @@ set_bindings() {
 	    tmux bind-key -T yank-register-query "$register" run-shell "${quotedScriptDir}/scripts/store_buffer.sh $quotedRegistersDirspec $register"
 	done
     done
+
+    tmux bind-key -T paste-register-query '"' run-shell "${projectDir}/scripts/paste-last-buffer.sh"
 }
 
 main() {
