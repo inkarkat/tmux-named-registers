@@ -1,13 +1,18 @@
 #!/bin/bash
 
-lastNonRegisterBuffer="$(tmux list-buffers -F '#{buffer_name}' | grep --invert-match -e '^register-.$' | head -n 1)" || exit
-[ -n "$lastNonRegisterBuffer" ] || exit
+count="${1:?}"; shift
 
-# Need to load the buffer to make it the current one (for future pastes via
-# prefix + ]).
-TMPFILE="$(mktemp --tmpdir "$(basename -- "$0")-XXXXXX" 2>/dev/null || echo "${TMPDIR:-/tmp}/$(basename -- "$0").$$$RANDOM")"
-tmux save-buffer -b "$lastNonRegisterBuffer" "$TMPFILE" \
-    && tmux load-buffer -b "$lastNonRegisterBuffer" "$TMPFILE"
-rm --force -- "$TMPFILE"
+readarray -t nonRegisterBuffers < <(tmux list-buffers -F '#{buffer_name}' | grep --invert-match -e '^register-.$')
+bufferName="${nonRegisterBuffers[$count]}"
+[ -n "$bufferName" ] || exit
 
-exec tmux paste-buffer -b "$lastNonRegisterBuffer"
+if [ $count -eq 0 ]; then
+    # Need to load the buffer to make it the current one (for future pastes via
+    # prefix + ]).
+    TMPFILE="$(mktemp --tmpdir "$(basename -- "$0")-XXXXXX" 2>/dev/null || echo "${TMPDIR:-/tmp}/$(basename -- "$0").$$$RANDOM")"
+    tmux save-buffer -b "$bufferName" "$TMPFILE" \
+	&& tmux load-buffer -b "$bufferName" "$TMPFILE"
+    rm --force -- "$TMPFILE"
+fi
+
+exec tmux paste-buffer -b "$bufferName"

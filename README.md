@@ -17,6 +17,9 @@ Register contents are persisted (also across restarts) in `~/.local/share/tmux/n
   The next built-in paste (prefix + ]) will repeat the paste of that register.
 - <kbd>prefix</kbd> <kbd>"</kbd> <kbd>"</kbd>
   Paste the last copied (non-register) buffer (also on subsequent built-in pastes).
+- <kbd>prefix</kbd> <kbd>"</kbd> <kbd>1</kbd> ... <kbd>9</kbd> <br>
+  Paste the contents of the next to last / third last / ... non-register buffer
+  into the current pane. Does not affect the next built-in paste (prefix + ]).
 
 ### Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
 

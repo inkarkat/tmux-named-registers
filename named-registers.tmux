@@ -39,7 +39,12 @@ set_bindings() {
 	done
     done
 
-    tmux bind-key -T paste-register-query '"' run-shell "${projectDir}/scripts/paste-last-buffer.sh"
+    tmux bind-key -T paste-register-query '"' run-shell "${projectDir}/scripts/paste-last-buffer.sh 0"
+
+    for register in 1 2 3 4 5 6 7 8 9
+    do
+	tmux bind-key -T paste-register-query "$register" run-shell "${projectDir}/scripts/paste-last-buffer.sh $register"
+    done
 }
 
 main() {
