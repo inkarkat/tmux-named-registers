@@ -7,7 +7,7 @@ fail() {
 
 readonly projectDir="$([ "${BASH_SOURCE[0]}" ] && cd "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 [ -d "$projectDir" ] || fail 'cannot determine script directory!'
-printf -v quotedScriptDir '%q' "$projectDir"
+printf -v quotedScriptDir '%q' "${projectDir}/scripts"
 
 # shellcheck source=./scripts/helpers.sh
 source "${projectDir}/scripts/helpers.sh"
@@ -35,7 +35,7 @@ set_bindings() {
 
 	for register in "$register" "${register^^}"
 	do
-	    tmux bind-key -T yank-register-query "$register" run-shell "${quotedScriptDir}/scripts/store_buffer.sh $quotedRegistersDirspec $register"
+	    tmux bind-key -T yank-register-query "$register" run-shell "${quotedScriptDir}/store_buffer.sh $quotedRegistersDirspec $register"
 	done
     done
 
