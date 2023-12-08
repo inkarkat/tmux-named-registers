@@ -1,10 +1,5 @@
 #!/bin/bash
 
-fail() {
-    tmux display-message "ERROR: tmux-named-registers ${1:-encountered an unspecified problem.}"
-    exit 3
-}
-
 readonly projectDir="$([ "${BASH_SOURCE[0]}" ] && cd "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 [ -d "$projectDir" ] || fail 'cannot determine script directory!'
 printf -v quotedScriptDir '%q' "${projectDir}/scripts"
@@ -47,9 +42,5 @@ set_bindings() {
     done
 }
 
-main() {
-    tmux-is-at-least 2.1 || return 0
-    set_bindings
-}
-
-main
+tmux-is-at-least 2.1 || exit 0
+set_bindings

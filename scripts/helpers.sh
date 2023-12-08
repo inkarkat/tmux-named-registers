@@ -43,3 +43,9 @@ else
 		tmux bind-key -t emacs-copy "$key" "$tmux_command" "$@"
 	}
 fi
+
+fail() {
+    tmux display-message "ERROR: tmux-named-registers ${1:-encountered an unspecified problem.}"
+    exit 3
+}
+
